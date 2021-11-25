@@ -13,7 +13,7 @@ client = disc.Client()
 greetings = ['hi ','hello ','heyy ','hey ','sup ','what\'s up ','hii ','yo, ']
 bot_names = ['B Bot','B-Bot','b bot','b-bot','bread bot','Bread Bot']
 
-fullgreet = greetings+bot_names
+
 
 @client.event
 async def on_ready():
@@ -24,20 +24,19 @@ async def on_ready():
 async def on_message(message):
   msg = message.content
   if message.author == client.user:
-        return
-
-  if any(word in msg for word in fullgreet):
-    await message.channel.send('Hey! :two_hearts:')
-
+    return
+  for g in greetings:
+    for b in bot_names:
+      if msg.upper() == g + b:
+        await message.channel.send('Hey! :two_hearts:')
 
   def getting_links(site,attr,attr_name):
     source = Request(site, headers = {'User-Agent': 'Mozilla/5.0'})
-
+    
     try:
       content = urlopen(source, timeout=10).read()
     except (http.IncompleteRead) as e:
       content = e.partial
-      
     page = BeautifulSoup(content,'html.parser')
     linkparent = page.find_all('a',attrs={attr:attr_name})
     links_list = [l.attrs.get('href') for l in linkparent]
@@ -45,24 +44,18 @@ async def on_message(message):
     for links in links_list:
       if links == '' or links is None:
         continue
-
-    links_list = list(dict.fromkeys(links_list))  
-
-    return(links_list[rand.randint(0,len(links_list))])
+      links_list = list(dict.fromkeys(links_list)) 
+      return(links_list[rand.randint(0,len(links_list)-1)])
 
   random_recipe = [getting_links('https://www.allrecipes.com/search/results/?search=bread','class','card__titleLink manual-link-behavior'),getting_links('https://www.southernliving.com/search?q=bread','class','search-result-title-link elementFont__subhead elementFont__subheadLinkOnly--innerHover')]
 
-  if msg.startswith('#givebread'):
-  
-    try:
-      await message.channel.send(f'''
+  if msg == '#givebread':
+    await message.channel.send(f'''
     Here\'s a recipe I absolutely adore! :tada:
     
-    {random_recipe[rand.randint(0,len(random_recipe))]}''')
-    except IndexError:
-      pass
+    {random_recipe[rand.randint(0,len(random_recipe)-1)]}''')
 
-  if msg.startswith('#help'):
+  if msg == '#help':
     await message.channel.send('''#givebread - random bread recipes!
     
   more coming soon :orange_heart:''')
