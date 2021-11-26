@@ -3,7 +3,6 @@ import discord as disc
 from bs4 import BeautifulSoup
 import random as rand
 from urllib.request import Request, urlopen
-from keep_alive import keep_alive
 import http.client as http
 http.HTTPConnection._http_vsn = 10
 http.HTTPConnection._http_vsn_str = 'HTTP/1.0'
@@ -60,9 +59,4 @@ async def on_message(message):
     
   more coming soon :orange_heart:''')
 
-
-
- 
-my_secret = os.environ['TOKEN']
-client.run(my_secret)
-keep_alive()
+client.run(os.getenv('TOKEN'))
